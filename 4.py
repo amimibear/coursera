@@ -32,7 +32,7 @@ for i in range(3):
         AZ = list(range(ord('A'),ord('Z')+1))
         for k in [32]+az+AZ+list(set(range(256))-set(az)-set(AZ)-{32,1}): # if k=j=1, the original padding is always valid
             c1 = c10+bytes([k^c[16*(i+1)-j]^j])+c11 # change the byte
-            cc = c1+c2
+            cc = c1+c2 # we should only use 2 blocks, changing the IV. why can't we use 3 blocks and change the 2nd block?
             print(i,j,k,cc.hex())
             hex = bytes([k^c[16*(i+1)-j]^j]).hex()
             if po.query(cc.hex()):
