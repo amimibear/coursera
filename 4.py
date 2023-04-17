@@ -24,6 +24,7 @@ po = PaddingOracle()
 c = bytes.fromhex(c)
 m = [0]*48 # plaintext
 for i in range(3):
+    c0 = c[:16*i]
     c2 = c[16*(i+1):16*(i+2)] # the block to be decrypted
     for j in range(1,17):
         c10 = c[16*i:16*(i+1)-j] # no change
@@ -32,7 +33,8 @@ for i in range(3):
         AZ = list(range(ord('A'),ord('Z')+1))
         for k in [32]+az+AZ+list(set(range(256))-set(az)-set(AZ)-{32,1}): # if k=j=1, the original padding is always valid
             c1 = c10+bytes([k^c[16*(i+1)-j]^j])+c11 # change the byte
-            cc = c1+c2 # we should only use 2 blocks, changing the IV. why can't we use 3 blocks and change the 2nd block?
+            cc = c1+c2 # we should only use 2 blocks, changing the IV.
+            # cc = c0+c1+c2 # why can't we use 3 blocks and change the 2nd block?
             print(i,j,k,cc.hex())
             hex = bytes([k^c[16*(i+1)-j]^j]).hex()
             if po.query(cc.hex()):
